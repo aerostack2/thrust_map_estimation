@@ -1,0 +1,16 @@
+combined_data_file: null
+coefficients_file: null
+poly_deg: 2nd
+compute_error: true
+plot_results: true
+
+data_filter:
+  min_thrust: 0.0
+  max_thrust: 11.0
+  min_volt: 20.4
+  max_volt: 25.2
+  min_throttle: 1300
+  max_throttle: 1500
+
+plotting:
+  color: orange
