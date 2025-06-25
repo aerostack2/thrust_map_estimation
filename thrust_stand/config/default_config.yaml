@@ -1,16 +1,16 @@
-combined_data_file: null
-coefficients_file: null
-poly_deg: 2nd
-compute_error: true
-plot_results: true
+combined_data_file: null  # combined data filename. If null, no data is saved.
+coefficients_file: null   # coefficients file name. Default is coefficients.txt
+poly_deg: 2nd             # degree of the desired polynomial to fit
+compute_error: true       # save a report file with fitting error and stddev
+plot_results: true        # plot resulting fitted surface
 
 data_filter:
-  min_thrust: 0.0
-  max_thrust: 11.0
-  min_volt: 20.4
-  max_volt: 25.2
-  min_throttle: 1300
-  max_throttle: 1500
+  min_thrust: 0.0         # discard all data rows with thrust below this threshold 
+  max_thrust: 11.0        # discard all data rows with thrust above this threshold        
+  min_volt: 20.4          # discard all data rows with voltage below this threshold
+  max_volt: 25.2          # discard all data rows with voltage above this threshold
+  min_throttle: 1300      # discard all data rows with throttle below this threshold
+  max_throttle: 1500      # discard all data rows with throttle above this threshold
 
 plotting:
-  color: orange
+  color: orange           # color for the plotted data and surface
