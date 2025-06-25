@@ -1,0 +1,6 @@
+__pycache__/
+*.py[cod]
+assets/
+data_csv/
+rosbags/
+figures/

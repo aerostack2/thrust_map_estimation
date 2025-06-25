@@ -1,0 +1,18 @@
+ 
+rosbags:
+  file1: 'rosbags/hover'   # Path to the rosbag file
+  file2: 'rosbags/up_down'  # Path to the rosbag file
+folder_experiment: 'experiment1'   # Folder to save the csv files
+T_max: false  # For Linear aproximation it must be 44 to use it or false
+cf_parameters: False     # Put False and comment the parameters if the correction factor have not been yet computed
+  # a2: 5.91892324          
+  # a1: -0.42842818
+  # a0:  0.00880309
+tm_parameters:           # Parameters for the thrust map curve      
+  a: 368.38174446706694
+  b: 275.9120443657675
+  c: 64.33013450010587
+  d: -8.020752230795884
+  e: -7.162085176021985
+  f: -1.3041691088519118
+ 
