@@ -7,4 +7,4 @@ The thrust stand used to record the test data of this repository works with the 
 - [rcb_ThrustMap_stepsUp](./rcb_ThrustMap_stepsUp.js) and [rcb_ThrustMap_stepsDown](./rcb_ThrustMap_stepsDown.js): performs a series of steps without returning to a low level throttle between steps. The steps in `stepsUp` are increasingly high, while the ones in `stepsDown` decrease along the experiment.
 
 
-<img src="../../figures/imav25-ramp-exp.png" alt="ramp" width="320"/> <img src="../../figures/imav25-steps-exp.png" alt="steps" width="320"/> <img src="../../figures/imav25-stepup-exp.png" alt="stepsup" width="320"/>
+<img src="../../figures/ramp-exp.png" alt="ramp" width="320"/> <img src="../../figures/steps-exp.png" alt="steps" width="320"/> <img src="../../figures/stepup-exp.png" alt="stepsup" width="320"/>

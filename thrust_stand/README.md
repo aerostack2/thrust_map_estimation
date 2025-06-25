@@ -2,7 +2,7 @@
 
 The scripts that process the thrust stand data and turn them into a polynomial Thrust Map are found here.
 
-<img src="../figures/imav25-single-rotor-surface.png" alt="SR-TM" width="335"/> <img src="../figures/imav25-multirotor-surface.png" alt="MR-TM" width="320"/>
+<img src="../figures/single-rotor-surface.png" alt="SR-TM" width="335"/> <img src="../figures/multirotor-surface.png" alt="MR-TM" width="320"/>
 
 ## Usage
 
