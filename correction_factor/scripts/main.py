@@ -62,6 +62,9 @@ if __name__ == "__main__":
     tm_params_list = [tm_params['a'], tm_params['b'], tm_params['c'],
                       tm_params['d'], tm_params['e'], tm_params['f']]
     for filename, path in rosbags.items():
+        if not os.path.exists(path):
+            print(f"Rosbag file does not exist: {path}")
+            exit()
         process(filename, path, folder_experiment)
         print(f"Processed {filename} from {path}")
     get_results(folder_experiment, tm_params_list, cf_params_list, t_max)
