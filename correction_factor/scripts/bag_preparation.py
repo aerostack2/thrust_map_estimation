@@ -64,7 +64,7 @@ class ProcessRosbag:
         for log in log_files:
             self.data = LogData.from_rosbag(log)
 
-    def run_preprocesing(self):
+    def run_preprocesing(self, mass):
 
         # Get the data from the log
         imu = self.compute_results.get_data(self.data.imu)
@@ -90,7 +90,9 @@ class ProcessRosbag:
 
         # Compute thrust measured and correction factor. CHANGE DRONE'S MASS
         # thrust_measured = compute_results.run_param_reference(imu_sampled, 0.96)
-        self.thrust_measured = self.compute_results.run_thrust_reference(self.imu_sampled, 0.972)
+        self.mass = mass
+        self.thrust_measured = self.compute_results.run_thrust_reference(
+            self.imu_sampled, self.mass)
 
     def save_results(self, filename: str, folder_name: str):
         """
@@ -103,7 +105,7 @@ class ProcessRosbag:
         time, battery = zip(*self.battery_sampled)
         time, a_z = zip(*self.imu_sampled)
         time, position = zip(*self.position_sampled)
-        m = [0.96] * len(battery)
+        m = [self.mass] * len(battery)
         self.csv_results.save_data([thrust_commanded, thrust_measured, battery, a_z, m, throttle, position, time], [
             'Thrust sended (N)', 'Thrust measured (N)', 'Voltage (V)', 'Acc (m/s²)', 'm (Kg)', 'Throttle (%)', 'Position_z (m)', 'Time (s)'], f"{filename}.csv", f"data/{folder_name}/")
 
@@ -113,7 +115,7 @@ class ProcessRosbag:
         """
         # Compute correction factor γ(B)
         self.correction_factor = self.compute_results.run_correction_factor(
-            self.thrust_commanded, self.thrust_measured, self.battery_sampled)
+            self.thrust_commanded, self.thrust_measured, self.battery_sampled, self.mass)
         # Estimated the parameters
         self.parameters = self.compute_results.get_parameters(self.correction_factor, 2)
 

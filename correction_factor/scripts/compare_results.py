@@ -43,8 +43,6 @@ def main():
     plt = pl.Plotter()
     csv = csvr.CSVResults()
     plt.plot_errors(csv.files_in_folder('data/errors'))
-    plt.plot_position_z(csv.files_in_folder('data/results'))
-    plt.plot_bat_vs_time(csv.files_in_folder('data/results'))
     plt.show()
 
 
