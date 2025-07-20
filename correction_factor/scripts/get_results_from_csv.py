@@ -38,10 +38,11 @@ __license__ = 'BSD-3-Clause'
 from compute_results import ResultsComputer
 import plot_utils as pl
 import csv_utils as csv
+from pathlib import Path
 
 
 class GetResultsFromCSV:
-    def __init__(self, filename: str, tm_paramerters: list[float] = None, cf_parameters: list[float] = None, t_max: float = None):
+    def __init__(self, filename: str, tm_paramerters: list[float] = None, cf_parameters: list[float] = None, t_max: float = None, mass: float = 1.0):
         self.csv_results = csv.CSVResults()
         self.compute = ResultsComputer()
         self.plot = pl.Plotter()
@@ -65,6 +66,7 @@ class GetResultsFromCSV:
         self.tm_parameters = tm_paramerters
         self.cf_parameters = cf_parameters
         self.t_max = t_max
+        self.mass = mass
 
     def linear_aproximation(self):
         self.throttle = self.compute.compute_throttle(
@@ -72,9 +74,9 @@ class GetResultsFromCSV:
         self.voltage_vs_throttle = self.compute.data1_vs_data2(
             self.throttle, self.voltage_voltage)
 
-    def thrustmap_without_correction_factor(self):
+    def thrustmap_without_correction_factor(self) -> list:
         correction_factor = self.compute.run_correction_factor(
-            self.throttle_thrust_commanded, self.throttle_thrust_meassured, self.voltage_voltage)
+            self.throttle_thrust_commanded, self.throttle_thrust_meassured, self.voltage_voltage, self.mass)
         self.cf_parameters = self.compute.get_parameters(correction_factor, 2)
         print(
             f'The ecuation for the correction factor is : {self.cf_parameters[2]} * x^2 + {self.cf_parameters[1]} * x + {self.cf_parameters[0]}')
@@ -84,10 +86,10 @@ class GetResultsFromCSV:
             self.throttle, self.voltage_voltage)
         self.plot.plot_fitted_curve(
             correction_factor, self.compute.func_2nd_order, self.cf_parameters)
-        self.plot.show()
 
     def thrustmap_with_correction_factor(self):
-        print(self.cf_parameters)
+        print(
+            f'The ecuation for the correction factor is : {self.cf_parameters[2]} * x^2 + {self.cf_parameters[1]} * x + {self.cf_parameters[0]}')
         self.throttle = self.compute.compute_throttle(
             self.throttle_thrust_meassured, self.voltage_voltage, self.cf_parameters, True, self.tm_parameters)
         self.voltage_vs_throttle = self.compute.data1_vs_data2(
@@ -110,3 +112,19 @@ class GetResultsFromCSV:
         (_, E_Thrust) = zip(*self.error_thrust)
         self.csv_results.save_data([V, ET_V, T, ET_T, E_Thrust], [
             'V (V)', 'ET_V (%)', 'T (N)', 'ET_T (%)', 'E_Thrust (%)'], f'{filename}_errors.csv', 'data/errors')
+
+    def computed_thrust_expected(self, filenames: list, cf_parameters: list[float] = None):
+        if cf_parameters is not None:
+            self.cf_parameters = cf_parameters
+        for file in filenames:
+            data = self.csv_results.read_csv(f'{file}')
+            throttle_thrust_commanded = self.csv_results.get_vector_from_csv(
+                data["Throttle (%)"], data["Thrust sended (N)"])
+            voltage_voltage = self.csv_results.get_vector_from_csv(
+                data["Voltage (V)"], data["Voltage (V)"])
+            throttle_thrust_meassured = self.csv_results.get_vector_from_csv(
+                data["Throttle (%)"], data["Thrust measured (N)"])
+            thrust_expected = self.compute.compute_thrust(
+                throttle_thrust_commanded, voltage_voltage, self.cf_parameters, False)
+            self.plot.plot([thrust_expected, throttle_thrust_meassured, throttle_thrust_commanded], [
+                'Thrust expected', 'Thrust measured', 'Thrust commanded'], 'Compare Thrust from experiment of ' + Path(file).stem, 'Time (s)', 'Thrust (N)')

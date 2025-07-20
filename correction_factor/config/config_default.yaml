@@ -1,10 +1,11 @@
  
 rosbags:
-  file1: 'rosbags/Hover'   # Path to the rosbag file
-  file2: 'rosbags/UpDown'  # Path to the rosbag file
-folder_experiment: 'experiment1'   # Folder to save the csv files
+  file1: 'rosbags/hover-no-cf-retry/flight_31'   # Path to the rosbag file
+  file2: 'rosbags/subir-bajar-no-cf/flight_33' 
+    # Path to the rosbag file
+folder_experiment: 'exp_sin_cf'   # Folder to save the csv files
 T_max: false  # For Linear aproximation it must be 44 to use it or false
-cf_parameters: False     # Put False and comment the parameters if the correction factor have not been yet computed
+cf_parameters: False # Put False and comment the parameters if the correction factor have not been yet computed
   # a2: 5.91892324          
   # a1: -0.42842818
   # a0:  0.00880309
@@ -15,4 +16,7 @@ tm_parameters:           # Parameters for the thrust map surface
   d: -8.020752230795884
   e: -7.162085176021985
   f: -1.3041691088519118
+read_only_csv: true  # If true, the code will read the csv files instead of the rosbag file
+mass: 1.254
+z_ref: 1.0
  

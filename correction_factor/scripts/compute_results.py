@@ -279,7 +279,7 @@ class ResultsComputer:
         elif grade == 3:
             return self.fit_curve(data, self.func_3rd_order)
 
-    def run_correction_factor(self, send_thrust, measured_thrust, battery) -> list[tuple[float, float]]:
+    def run_correction_factor(self, send_thrust, measured_thrust, battery, mass) -> list[tuple[float, float]]:
         """
         Run correction factor for thrust map vs time
 
@@ -288,7 +288,7 @@ class ResultsComputer:
         :return: List(time, correction_factor)
         """
 
-        DE = DisturbanceEstimation(0.96)
+        DE = DisturbanceEstimation(mass)
         correction_factor_list = []
         for (t_send, value_send), (_, value_measured), (_, voltage) in zip(send_thrust, measured_thrust, battery):
 
