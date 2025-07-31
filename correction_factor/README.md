@@ -5,6 +5,23 @@
  <img src="../figures/fit-correction-factor.png" alt="SR-TM" width="335"/> 
 </div>
 
+## Prerequisites
+
+In order to read a Rosbag it must be record using [Aerostack2](https://github.com/aerostack2/aerostack2) with the following topics:
+  - "actuator_command/thrust"
+  - "sensor_measurements/imu"
+  - "sensor_measurements/battery"
+  - "debug/controller_reference"
+  - "debug/controller_state"
+  - "debug/rc/command"
+  - "platform/info"
+  - "self_localization/pose"
+
+If you want to calculate the correction factor using your own data, organize it in a csv file with the following header and arrange the data in columns.
+
+`
+Thrust sended (N),Thrust measured (N),Voltage (V),Acc (m/s²),m (Kg),Throttle (%),Position_z (m),Time (s)
+`
 ## Usage
 These scripts enable you to work with ROSBags from flight tests, using either a linear or a second-order approximation of the thrust map and compute the corresponding correction factor. If the flights were recorded with the correction factor active, the scripts can also generate results for comparison.
 
@@ -31,7 +48,7 @@ tm_parameters:           # Parameters for the thrust map surface
   d: -8.020752230795884
   e: -7.162085176021985
   f: -1.3041691088519118
-read_only_csv: false  # If true, the code will read the csv files instead of the rosbag file
+read_only_csv: False  # If true, the code will read the csv files instead of the rosbag file
 mass: 1.254
 z_ref: 1.0
 ```
@@ -59,15 +76,15 @@ Update the thrust map parameters used in the experiments.
 To run the script:
 
 
- `
-python3 correction_factor/scripts/main.py --config correction_factor/config/my_config.yaml
-`
+ ```bash
+python3 correction_factor/scripts/main.py --config correction_factor/config/config_default.yaml
+```
 
 ### Experiments recorded with a correction factor.
 
 If the recorded experiments have already used a correction factor curve, you must edit the configuration file.
 
-```
+```bash
 cf_parameters: 
     a2: 5.91892324          
     a1: -0.42842818
@@ -81,9 +98,9 @@ Add the parameters of the corresponding thrust map or the linear approximation.
 
 Then run:
 
- `
-python3 correction_factor/scripts/main.py --config correction_factor/config/my_config.yaml
-`
+ ```bash
+python3 correction_factor/scripts/main.py --config correction_factor/config/config_default.yaml
+```
 The script will do the same, but the graph to compare the thrust only will contain the thrust commanded and the thrust computed with th IMU's data. 
 
 ## Experiments recorded with the linear approximation.
@@ -91,9 +108,9 @@ If the recorded experiments use the linear approximation, set the 'T_max' parame
 
 Then run:
 
- `
-python3 correction_factor/scripts/main.py --config correction_factor/config/my_config.yaml
-`
+ ```bash
+python3 correction_factor/scripts/main.py --config correction_factor/config/config_default.yaml
+```
 The script will do the same, but the graph to compare the thrust only will contain the thrust commanded and the thrust computed with th IMU's data. 
 
 **IMPORTANT:**
@@ -103,7 +120,7 @@ In the three cases. If you have already read the rosbags files, you can only rea
 
 To compare the results of different experiments using various thrust maps with or without a correction factor or a linear approximation, run:
 
- ```
+ ```bash
 python3 correction_factor/scripts/compare_results.py 
 ```
 This will access the errors folder and plot the error metrics from the different experiments.

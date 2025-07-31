@@ -128,9 +128,12 @@ class Plotter:
             errors_V_thrust.append(self.csv_results.get_vector_from_csv(
                 d["V (V)"], d["E_Thrust (%)"]))
             legends.append(Path(file_path).stem)
-        self.plot(errors_V, legends, 'Errors (% )', 'Battery (V)', 'Throttle error (%)')
-        self.plot(errors_T, legends, 'Errors (% )', 'Thrust (N)', 'Throttle error (%)')
-        self.plot(errors_V_thrust, legends, 'Errors (% )', 'Battery (V)', 'Thrust error (%)')
+        self.plot(errors_V, legends, 'Errors (% ): Throttle VS Battery',
+                  'Battery (V)', 'Throttle error (%)')
+        self.plot(errors_T, legends, 'Errors (% ): Throttle VS Thrust',
+                  'Thrust (N)', 'Throttle error (%)')
+        self.plot(errors_V_thrust, legends, 'Errors (% ): Thrust VS Battery',
+                  'Battery (V)', 'Thrust error (%)')
 
     def plot_position_z_multiple_experiments(self, file_paths: list, ref_value: float = 3.0):
 

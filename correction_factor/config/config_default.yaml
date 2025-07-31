@@ -4,7 +4,7 @@ rosbags:
   file2: 'rosbags/subir-bajar-no-cf/flight_33' 
     # Path to the rosbag file
 folder_experiment: 'exp_sin_cf'   # Folder to save the csv files
-T_max: false  # For Linear aproximation it must be 44 to use it or false
+T_max: false  # For linear approximation, it must be the sum of the maximum thrust of each rotor. Otherwise, it is false.
 cf_parameters: False # Put False and comment the parameters if the correction factor have not been yet computed
   # a2: 5.91892324          
   # a1: -0.42842818
@@ -16,7 +16,7 @@ tm_parameters:           # Parameters for the thrust map surface
   d: -8.020752230795884
   e: -7.162085176021985
   f: -1.3041691088519118
-read_only_csv: true  # If true, the code will read the csv files instead of the rosbag file
+read_only_csv: False  # If true, the code will read the csv files instead of the rosbag file
 mass: 1.254
 z_ref: 1.0
  
