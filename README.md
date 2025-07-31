@@ -4,14 +4,12 @@ Multirotor Aerial Vehicles </h1>
     <p align="center">
     <a href=><light>Francisco J. Anguita</light></a>
     ·
-    <a href=><light>PRafael Perez-Segui</light></a>
+    <a href=><light>Rafael Perez-Segui</light></a>
     ·
     <a href=><light>Carmen DR.Pita-Romero</light></a>
     ·
     <a href=><light> Miguel Fernandez Cortizas</light></a>
     .
-    <a href=><light>Rafael Perez-Segui </light></a>
-    ·
     <a href=><light>Javier Melero-Deza</light></a>
     .
     <a href=><light>Pascual Campoy</light></a>
