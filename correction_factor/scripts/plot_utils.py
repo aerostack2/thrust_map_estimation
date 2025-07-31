@@ -128,11 +128,14 @@ class Plotter:
             errors_V_thrust.append(self.csv_results.get_vector_from_csv(
                 d["V (V)"], d["E_Thrust (%)"]))
             legends.append(Path(file_path).stem)
-        self.plot(errors_V, legends, 'Errors (% )', 'Battery (V)', 'Throttle error (%)')
-        self.plot(errors_T, legends, 'Errors (% )', 'Thrust (N)', 'Throttle error (%)')
-        self.plot(errors_V_thrust, legends, 'Errors (% )', 'Battery (V)', 'Thrust error (%)')
+        self.plot(errors_V, legends, 'Errors (% ): Throttle VS Battery',
+                  'Battery (V)', 'Throttle error (%)')
+        self.plot(errors_T, legends, 'Errors (% ): Throttle VS Thrust',
+                  'Thrust (N)', 'Throttle error (%)')
+        self.plot(errors_V_thrust, legends, 'Errors (% ): Thrust VS Battery',
+                  'Battery (V)', 'Thrust error (%)')
 
-    def plot_position_z(self, file_paths: list, ref_value: float = 3.0):
+    def plot_position_z_multiple_experiments(self, file_paths: list, ref_value: float = 3.0):
 
         time_synced = []
         z_data = []
@@ -151,7 +154,26 @@ class Plotter:
             labels = [f"Curve {i+1}" for i in range(len(z_data) - 1)] + ["Reference"]
         self.plot(z_data, labels, 'Hover stability', 'Time (s)', 'z (m)', (0, 200))
 
-    def plot_bat_vs_time(self, file_paths: list, labels: list = None):
+    def plot_position_z(self, file_paths: list, ref_value: float = 3.0):
+
+        time_synced = []
+        z_data = []
+
+        for file_path in file_paths:
+            data = self.csv_results.read_csv(file_path)
+            time = self.synchronize_time(data["Time (s)"])
+            z = self.csv_results.get_vector_from_csv(time, data["Position_z (m)"])
+            time_synced.append(time)
+            z_data.append(z)
+            ref = [ref_value] * len(time_synced[0])
+            ref_vec = self.csv_results.get_vector_from_csv(time_synced[0], ref)
+            z_data.append(ref_vec)
+            self.plot(z_data, ['Real z position ', 'Reference value'],
+                      'Stability of experiment ' + Path(file_path).stem, 'Time (s)', 'z (m)', (0, 200))
+            z_data.clear()
+            time_synced.clear()
+
+    def plot_bat_vs_time_multiple_experiments(self, file_paths: list, labels: list = None):
         voltage_data = []
         data_time = self.csv_results.read_csv(file_paths[0])
         time = self.synchronize_time(data_time["Time (s)"])
@@ -162,6 +184,41 @@ class Plotter:
         labels = [f"Curve {i+1}" for i in range(len(voltage_data))]
 
         self.plot(voltage_data, labels, 'Battery vs Time', 'Time (s)', 'Battery (V)')
+
+    def plot_bat_vs_time(self, file_paths: list, labels: list = None):
+
+        for file_path in file_paths:
+            data = self.csv_results.read_csv(file_path)
+            time = self.synchronize_time(data["Time (s)"])
+            voltage = self.csv_results.get_vector_from_csv(time, data["Voltage (V)"])
+            self.plot([voltage], ['Experiment from ' + Path(file_path).stem],
+                      'Battery vs Time', 'Time (s)', 'Battery (V)')
+
+    def plot_thrust(self, file_paths: list, labels: list = None):
+        for file_path in file_paths:
+            data = self.csv_results.read_csv(file_path)
+            thrust_comanded = self.csv_results.get_vector_from_csv(data["Time (s)"],
+                                                                   data["Thrust sended (N)"])
+            thrust_measured = self.csv_results.get_vector_from_csv(
+                data["Time (s)"], data["Thrust measured (N)"])
+            self.plot([thrust_comanded, thrust_measured],
+                      ['Thrust commanded', 'Thrust measured'],
+                      'Thrust vs Time in experiment for ' + Path(file_path).stem,
+                      'Time (s)',
+                      'Thrust (N)'
+                      )
+
+    def plot_throttle(self, file):
+        data = self.csv_results.read_csv(file)
+
+        throttle = self.csv_results.get_vector_from_csv(
+            data["Time (s)"], data["Throttle (%)"])
+        self.plot([throttle],
+                  ['Throttle sended'],
+                  'Throttle vs Time',
+                  'Time (s)',
+                  'Throttle (%)'
+                  )
 
     def show(self):
         """Show all plots"""
