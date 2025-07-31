@@ -8,14 +8,14 @@
 ## Prerequisites
 
 In order to read a Rosbag it must be record using [Aerostack2](https://github.com/aerostack2/aerostack2) with the following topics:
-  - "actuator_command/thrust"
-  - "sensor_measurements/imu"
-  - "sensor_measurements/battery"
-  - "debug/controller_reference"
-  - "debug/controller_state"
-  - "debug/rc/command"
-  - "platform/info"
-  - "self_localization/pose"
+  - "actuator_command/thrust" | Type: as2_msgs/msg/Thrust 
+  - "sensor_measurements/imu" | Type: sensor_msgs/msg/Imu
+  - "sensor_measurements/battery" | Type: sensor_msgs/msg/BatteryState
+  - "debug/controller_reference" | Type: geometry_msgs/msg/Vector3Stamped
+  - "debug/controller_state" | Type: geometry_msgs/msg/Vector3Stamped
+  - "debug/rc/command" | Type: as2_msgs/msg/UInt16MultiArrayStamped
+  - "platform/info" | Type: as2_msgs/msg/PlatformInfo
+  - "self_localization/pose" | Type: geometry_msgs/msg/PoseStamped
 
 If you want to calculate the correction factor using your own data, organize it in a csv file with the following header and arrange the data in columns.
 

@@ -20,6 +20,7 @@ def process(filename: str, log_file: str, folder_name: str, mass: float):
 def get_results(filename: str, tm_paramerters, cf_parameters, t_max, mass, ref_value, read_only_csv):
     csv = csvr.CSVResults()
     plot = pl.Plotter()
+    print(f"[INFO] Reading results from {filename} using the mass {mass} kg")
     if not read_only_csv:
         csv.unify_csvs(f"data/{filename}", "data/results", f"{filename}.csv")
     compute_results = results.GetResultsFromCSV(

@@ -106,7 +106,7 @@ class CSVResults:
         df_all = pd.concat(dfs, ignore_index=True)
         df_all.to_csv(output_file, index=False)
 
-        print(f"[OK] Unify {len(csv_files)} files in {output_file}")
+        print(f"Unify {len(csv_files)} files in {output_file}")
 
     def read_csv(self, filename: str):
         data = defaultdict(list)

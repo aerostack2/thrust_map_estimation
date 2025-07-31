@@ -409,7 +409,6 @@ class ResultsComputer:
                 if np.isnan(error):
                     print(v1, v2)
                 error_list.append((t1, error))
-                # print(error)
                 mean_error.append(error)
-        print(f"Error : {np.mean(mean_error)} | {np.std(mean_error)}")
+        print(f"Error : {np.mean(mean_error)} ± {np.std(mean_error)}")
         return error_list
