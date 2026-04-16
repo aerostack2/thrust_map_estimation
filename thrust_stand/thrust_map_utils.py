@@ -25,11 +25,12 @@ def read_config(config_path):
     return config
 
 
-def data_assemble(source: str | list[str], output_file: str = None) -> pd.DataFrame:
+def data_assemble(source: str | list[str], column_names: dict[str, str], output_file: str = None) -> pd.DataFrame:
     # Read the data from csv files and dump it into a common dataframe
     # print(csv_files)
     combined_data = []
-    column_names = ['ESC signal (µs)', 'Thrust (N)', 'Current (A)', 'Voltage (V)']
+    cols_to_read = [column_names['throttle'], column_names['thrust'], 
+                    column_names['voltage']]
 
     if isinstance(source, str):
         print(f'Combining all .csv data from directory: {source}\n')
@@ -41,7 +42,7 @@ def data_assemble(source: str | list[str], output_file: str = None) -> pd.DataFr
 
     for file in csv_files:
         try:
-            df = pd.read_csv(file, usecols=column_names)
+            df = pd.read_csv(file, usecols=cols_to_read)
             combined_data.append(df)
             print(f"Processed: {file}")
         except Exception as e:
@@ -78,22 +79,28 @@ def data_assemble(source: str | list[str], output_file: str = None) -> pd.DataFr
 #     return data
 
 
-def filter_data(data: pd.DataFrame, filters: dict[str, float]) -> pd.DataFrame:
+def filter_data(data: pd.DataFrame, filters: dict[str, float], column_names: dict[str, str]) -> pd.DataFrame:
     # Filter the data and keep only the columns that are required
-    # column_names = ['ESC signal (µs)', 'Thrust (N)', 'Current (A)', 'Voltage (V)']
-    # apply a *(-1) to the Thrust column to make it positive
-    data['Thrust (N)'] = data['Thrust (N)'] * (-1)
+    thrust_col = column_names['thrust']
+    voltage_col = column_names['voltage']
+    throttle_col = column_names['throttle']
+    
+    # print the maximum thrust value
+    print('Max thrust value:', data[thrust_col].max())
+    
+    print(data[throttle_col].min(), data[throttle_col].max())
+    print(filters['max_throttle'], filters['min_throttle'])
 
     # filter data
-    data = data[data['Voltage (V)'] > filters['min_volt']]
-    data = data[data['Voltage (V)'] < filters['max_volt']]
-    data = data[data['ESC signal (µs)'] > filters['min_throttle']]
-    data = data[data['ESC signal (µs)'] < filters['max_throttle']]
-    data = data[data['Thrust (N)'] > filters['min_thrust']]
-    data = data[data['Thrust (N)'] < filters['max_thrust']]
-
-    # print the maximun thrust value
-    print('Max thrust value:', data['Thrust (N)'].max())
+    data = data[data[voltage_col] > filters['min_volt']]
+    data = data[data[voltage_col] < filters['max_volt']]
+    data = data[data[throttle_col] > filters['min_throttle']]
+    data = data[data[throttle_col] < filters['max_throttle']]
+    data = data[data[thrust_col] > filters['min_thrust']]
+    data = data[data[thrust_col] < filters['max_thrust']]
+    
+    print(data)
+    
     return data
 
 
@@ -147,15 +154,15 @@ def get_polynomial(deg):
 
 if __name__ == '__main__':
     args = parse_args()
-
+    
     config = read_config(args.config)
 
     if args.files:
-        data = data_assemble(args.files, config['output_file'])
+        data = data_assemble(args.files, config['column_names'], config['output_file'])
     elif args.directory:
-        data = data_assemble(args.directory, config['output_file'])
+        data = data_assemble(args.directory, config['column_names'], config['output_file'])
 
-    data = filter_data(data, config['data_filter'])
+    data = filter_data(data, config['data_filter'], config['column_names'])
 
     fig, ax = setup_figure_3D()
     scatter_plot(data, fig, ax, config['plotting']['color'])

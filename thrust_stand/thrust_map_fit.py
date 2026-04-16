@@ -6,10 +6,12 @@ from thrust_map_error import compute_error
 from scipy.optimize import curve_fit
 
 
-def fit_curve(data: pd.DataFrame, deg):
+def fit_curve(data: pd.DataFrame, deg, column_names: dict[str, str]):
     # Fit the curve to the data
-    xdata = [data['Thrust (N)'], data['Voltage (V)']]
-    ydata = data['ESC signal (µs)']
+    xdata = [data[column_names['thrust']], data[column_names['voltage']]]
+    print(xdata)
+    ydata = data[column_names['throttle']]
+    print(ydata)
     print('Fitting curve')
     func = get_polynomial(deg)
     popt, pcov = curve_fit(func, xdata, ydata)
@@ -44,26 +46,29 @@ def store_coefficients(popt, output_file='coefficients.txt'):
 
 if __name__ == '__main__':
     args = parse_args()
-
+    print(args.config)
     config = read_config(args.config)
+    print(config)
 
     if args.files:
-        data = data_assemble(args.files, config['combined_data_file'])
+        data = data_assemble(args.files, config['column_names'], config['combined_data_file'])
     elif args.directory:
-        data = data_assemble(args.directory, config['combined_data_file'])
+        data = data_assemble(args.directory, config['column_names'], config['combined_data_file'])
 
-    data = filter_data(data, config['data_filter'])
+    data = filter_data(data, config['data_filter'], config['column_names'])
+    
+    print(data)
 
-    popt, func = fit_curve(data, config['poly_deg'])
+    popt, func = fit_curve(data, config['poly_deg'], config['column_names'])
 
     store_coefficients(popt, config['coefficients_file'])
 
     if config['compute_error']:
-        compute_error(data, popt)
+        compute_error(data, popt, config['column_names'])
 
     if config['plot_results']:
         fig, ax = setup_figure_3D()
-        surface_plot(data, fig, ax, func, popt, config['plotting']['color'])
-        scatter_plot(data, fig, ax, config['plotting']['color'])
+        surface_plot(data, fig, ax, func, popt, config['plotting']['color'], config['column_names'])
+        scatter_plot(data, fig, ax, config['plotting']['color'], config['column_names'])
 
         plt.show()
